@@ -1,0 +1,33 @@
+---
+- name: restart opennebula msg
+  debug:
+    msg: >
+      OpenNebula needs to be restarted for changes to take effect.
+      Before restarting,
+      please make sure there are no virtual machines in a transient state (prolog, migr, epil, save).
+      Wait until these virtual machines are in a final state (runn, suspended, stopped, done).
+
+- name: restart opennebula-scheduler
+  service:
+    name: opennebula-scheduler
+    state: restarted
+
+- name: restart opennebula-sunstone
+  service:
+    name: opennebula-sunstone
+    state: restarted
+
+- name: restart opennebula-novnc
+  service:
+    name: opennebula-novnc
+    state: restarted
+
+- name: restart apache
+  service:
+    name: apache2
+    state: restarted
+
+- name: reload apache
+  service:
+    name: apache2
+    state: reloaded

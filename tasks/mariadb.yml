@@ -1,0 +1,72 @@
+---
+- name: Add MariaDB apt signing key
+  apt_key:
+    url: https://mariadb.org/mariadb_release_signing_key.asc
+    state: present
+
+- name: Add MariaDB 10.4 apt repository
+  apt_repository:
+    repo: deb [arch=amd64] http://mariadb.mirror.digitalpacific.com.au/repo/10.4/ubuntu {{ ansible_distribution_release }} main
+    filename: mariadb
+    update_cache: yes
+    state: present
+
+- name: Install MariaDB
+  apt:
+    name: mariadb-server
+    state: present
+
+- name: Ensure MariaDB is started and enabled
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Install MySQL python library
+  apt:
+    name: python3-mysqldb
+    state: present
+
+- name: Ensure root@localhost exists
+  mysql_user:
+    name: root
+    host: localhost
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Set root plugin to unix_socket
+  command: mysql -NBe "ALTER USER root@localhost IDENTIFIED VIA unix_socket;"
+  changed_when: false
+
+- name: Disallow root login remotely
+  command: mysql -NBe "DELETE FROM mysql.user WHERE User='root' AND Host <> 'localhost';"
+  changed_when: false
+
+- name: Remove all anonymous user accounts
+  mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+
+- name: Remove test database
+  mysql_db:
+    name: test
+    state: absent
+
+- name: Add oneadmin user
+  mysql_user:
+    name: oneadmin
+    host: localhost
+    password: "{{ one_db_password }}"
+    update_password: on_create
+    priv: 'opennebula.*:ALL'
+    state: present
+  no_log: true
+
+- name: Set isolation level
+  command: mysql -NBe "SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;"
+  changed_when: false
+
+- name: Flush privileges
+  command: mysql -NBe "FLUSH PRIVILEGES;"
+  changed_when: false

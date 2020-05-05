@@ -1,0 +1,17 @@
+---
+- name: Create database backup directory
+  file:
+    path: /var/backups/database
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Enable opennebula database backups at 00:00 everyday
+  cron:
+    name: backup opennebula database
+    user: root
+    hour: 0
+    minute: 0
+    job: "mysqldump opennebula > /var/backups/database/opennebula.sql && chmod 600 /var/backups/database/opennebula.sql"
+    state: present
