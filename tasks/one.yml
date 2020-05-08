@@ -4,9 +4,9 @@
     url: https://downloads.opennebula.org/repo/repo.key
     state: present
 
-- name: Add OpenNebula 5.10 apt repository
+- name: Add OpenNebula {{ one_version }} apt repository
   apt_repository:
-    repo: deb https://downloads.opennebula.org/repo/5.10/Ubuntu/{{ ansible_distribution_version }} stable opennebula
+    repo: deb https://downloads.opennebula.org/repo/{{ one_version }}/Ubuntu/{{ ansible_distribution_version }} stable opennebula
     filename: opennebula
     update_cache: yes
     state: present
@@ -20,7 +20,7 @@
 
 - name: Set oneadmin password
   template:
-    src: one/one_auth.j2
+    src: one/one_auth
     dest: /var/lib/one/.one/one_auth
     owner: oneadmin
     group: oneadmin
@@ -32,7 +32,7 @@
 
 - name: Configure /etc/one/oned.conf
   template:
-    src: one/oned.conf.j2
+    src: one/oned.conf
     dest: /etc/one/oned.conf
     owner: root
     group: oneadmin
@@ -42,7 +42,7 @@
 
 - name: Configure /etc/one/sunstone-server.conf
   template:
-    src: one/sunstone-server.conf.j2
+    src: one/sunstone-server.conf
     dest: /etc/one/sunstone-server.conf
     owner: root
     group: oneadmin
@@ -53,7 +53,7 @@
 
 - name: Configure /etc/one/auth/ldap_auth.conf
   template:
-    src: one/ldap_auth.conf.j2
+    src: one/ldap_auth.conf
     dest: /etc/one/auth/ldap_auth.conf
     owner: root
     group: oneadmin
@@ -67,3 +67,8 @@
   with_items:
     - opennebula
     - opennebula-sunstone
+
+- name: Install python3-pyone
+  apt:
+    name: python3-pyone
+    state: present

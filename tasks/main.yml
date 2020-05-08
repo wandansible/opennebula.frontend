@@ -1,9 +1,4 @@
 ---
-- name: Refresh apt cache
-  apt:
-    update_cache: yes
-  changed_when: false
-
 - name: Configure MariaDB
   import_tasks: mariadb.yml
 
@@ -21,15 +16,3 @@
 
 - name: Configure passwordless ssh
   import_tasks: ssh.yml
-  tags: onehost
-
-- name: Configure python pip packages
-  import_tasks: pip.yml
-
-- name: Configure OpenNebula hosts
-  import_tasks: hosts.yml
-  tags: onehost
-
-- name: Provision OpenNebula virtual machines
-  import_tasks: vms.yml
-  tags: onevm

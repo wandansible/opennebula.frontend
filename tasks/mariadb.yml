@@ -1,16 +1,4 @@
 ---
-- name: Add MariaDB apt signing key
-  apt_key:
-    url: https://mariadb.org/mariadb_release_signing_key.asc
-    state: present
-
-- name: Add MariaDB 10.4 apt repository
-  apt_repository:
-    repo: deb [arch=amd64] http://mariadb.mirror.digitalpacific.com.au/repo/10.4/ubuntu {{ ansible_distribution_release }} main
-    filename: mariadb
-    update_cache: yes
-    state: present
-
 - name: Install MariaDB
   apt:
     name: mariadb-server
