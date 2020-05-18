@@ -1,0 +1,24 @@
+---
+- name: Install pip dependencies
+  apt:
+    name:
+      - python3-pip
+      - python3-venv
+      - python3-setuptools
+    state: present
+
+- name: Create OpenNebula python virtualenv directory
+  file:
+    path: /opt/one/venv
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Install pyone in OpenNebula python virtualenv
+  pip:
+    name: pyone
+    version: "{{ one_pyone_version }}"
+    virtualenv: /opt/one/venv
+    virtualenv_command: "python3 -m venv"
+    state: present

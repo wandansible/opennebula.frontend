@@ -16,3 +16,6 @@
 
 - name: Configure passwordless ssh
   import_tasks: ssh.yml
+
+- name: Configure python packages
+  import_tasks: pip.yml

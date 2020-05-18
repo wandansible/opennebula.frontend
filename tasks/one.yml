@@ -6,7 +6,7 @@
 
 - name: Add OpenNebula {{ one_version }} apt repository
   apt_repository:
-    repo: deb https://downloads.opennebula.org/repo/{{ one_version }}/Ubuntu/{{ ansible_distribution_version }} stable opennebula
+    repo: deb https://downloads.opennebula.org/repo/{{ one_version }}/{{ ansible_distribution }}/{{ ansible_distribution_version }} stable opennebula
     filename: opennebula
     update_cache: yes
     state: present
@@ -67,8 +67,3 @@
   with_items:
     - opennebula
     - opennebula-sunstone
-
-- name: Install python3-pyone
-  apt:
-    name: python3-pyone
-    state: present
