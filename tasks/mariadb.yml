@@ -22,13 +22,26 @@
     priv: '*.*:ALL,GRANT'
     state: present
 
+- name: Get root plugin
+  command: mysql -NBe "SELECT Plugin FROM mysql.user WHERE User='root' AND Host='localhost';"
+  changed_when: false
+  register: root_plugin
+
 - name: Set root plugin to unix_socket
   command: mysql -NBe "ALTER USER root@localhost IDENTIFIED VIA unix_socket;"
+  when: root_plugin.stdout != "unix_socket"
+
+- name: Get root hosts that are not localhost
+  command: mysql -NBe "SELECT Host FROM mysql.user WHERE User='root' AND Host <> 'localhost';"
   changed_when: false
+  register: root_hosts
 
 - name: Disallow root login remotely
-  command: mysql -NBe "DELETE FROM mysql.user WHERE User='root' AND Host <> 'localhost';"
-  changed_when: false
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    state: absent
+  with_items: "{{ root_hosts.stdout_lines }}"
 
 - name: Remove all anonymous user accounts
   mysql_user:
@@ -51,10 +64,11 @@
     state: present
   no_log: true
 
-- name: Set isolation level
-  command: mysql -NBe "SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;"
+- name: Get global transaction isolation level
+  command: mysql -NBe "SELECT @@global.tx_isolation;"
   changed_when: false
+  register: tx_isolation
 
-- name: Flush privileges
-  command: mysql -NBe "FLUSH PRIVILEGES;"
-  changed_when: false
+- name: Set global transaction isolation level
+  command: mysql -NBe "SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;"
+  when: tx_isolation.stdout != "READ-COMMITTED"
