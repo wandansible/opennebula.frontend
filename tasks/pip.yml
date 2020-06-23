@@ -20,5 +20,5 @@
     name: pyone
     version: "{{ one_pyone_version }}"
     virtualenv: /opt/one/venv
-    virtualenv_command: "python3 -m venv"
+    virtualenv_command: "/usr/bin/python3 -m venv"
     state: present

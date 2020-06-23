@@ -1,13 +1,26 @@
 ---
-- name: Add front-end ssh host key to known hosts
-  known_hosts:
-    name: "{{ one_frontend }}"
-    path: /var/lib/one/.ssh/known_hosts
-    key: "{{ one_frontend }} {{ one_frontend_key }}"
-    state: present
-
-- name: Set known hosts file ownership
-  file:
-    path: /var/lib/one/.ssh/known_hosts
+- name: Set authorized keys
+  template:
+    src: ssh/authorized_keys
+    dest: /var/lib/one/.ssh/authorized_keys
     owner: oneadmin
     group: oneadmin
+    mode: u=rw,g=,o=
+
+- name: Add KVM and LXD hostnames for all hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item.one_host.ip }} kvm.{{ item.inventory_hostname }} lxd.{{ item.inventory_hostname }}"
+    regexp: 'kvm.{{ item.inventory_hostname }}'
+    state: present
+  with_items: "{{ one_related_hosts }}"
+  loop_control:
+      label: "{{ item.inventory_hostname }}"
+
+- name: Configure known hosts
+  template:
+    src: ssh/known_hosts
+    dest: /var/lib/one/.ssh/known_hosts
+    owner: oneadmin
+    group: oneadmin
+    mode: u=rw,g=,o=
