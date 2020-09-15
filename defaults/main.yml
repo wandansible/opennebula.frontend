@@ -3,5 +3,3 @@ one_apt_key_fingerprint: "92B77188854CF23E1634DA89592F7F0585E16EBF"
 one_version: "5.12"
 one_pyone_version: ""
 one_datastores: []
-
-one_related_hosts: "{{ hostvars | dict2items | map(attribute='value') | selectattr('one_host', 'defined') | selectattr('one_frontend', 'defined') | selectattr('one_frontend', 'equalto', one_frontend) | list }}"
