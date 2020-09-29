@@ -27,3 +27,12 @@
     owner: oneadmin
     group: oneadmin
     mode: u=rw,g=,o=
+
+- name: Add oneadmin private ssh key
+  copy:
+    content: "{{ one_ssh_privkey }}"
+    dest: /var/lib/one/.ssh/id_{{ one_ssh_key_type }}
+    owner: oneadmin
+    group: oneadmin
+    mode: u=rw,g=,o=
+  no_log: true
