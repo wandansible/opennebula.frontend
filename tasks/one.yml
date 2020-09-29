@@ -41,6 +41,14 @@
   no_log: true
   notify: restart opennebula msg
 
+- name: Create OpenNebula ssl directory
+  file:
+    path: /etc/one/ssl
+    state: directory
+    owner: root
+    group: oneadmin
+    mode: u=rwx,g=rx,o=
+
 - name: Configure /etc/one/sunstone-server.conf
   template:
     src: one/sunstone-server.conf
