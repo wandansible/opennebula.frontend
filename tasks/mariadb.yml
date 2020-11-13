@@ -41,7 +41,7 @@
     name: root
     host: "{{ item }}"
     state: absent
-  with_items: "{{ root_hosts.stdout_lines }}"
+  loop: "{{ root_hosts.stdout_lines }}"
 
 - name: Remove all anonymous user accounts
   mysql_user:
