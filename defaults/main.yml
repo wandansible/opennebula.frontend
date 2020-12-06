@@ -4,3 +4,4 @@ one_version: "5.12"
 one_pyone_version: ""
 one_datastores: []
 one_ssh_key_type: ed25519
+one_debug_level: 1  # warning

@@ -22,6 +22,11 @@
     name: opennebula-novnc
     state: restarted
 
+- name: restart opennebula-hem
+  ansible.builtin.service:
+    name: opennebula-hem
+    state: restarted
+
 - name: restart apache
   service:
     name: apache2

@@ -68,6 +68,30 @@
     group: oneadmin
     mode: '0644'
 
+- name: Configure OpenNebula monitord log level
+  ansible.builtin.lineinfile:
+    path: /etc/one/monitord.conf
+    regexp: '(?i)^\s*debug_level\s*='
+    line: "  debug_level = {{ one_debug_level }}"
+    state: present
+  notify: restart opennebula msg
+
+- name: Configure opennebula-scheduler log level
+  ansible.builtin.lineinfile:
+    path: /etc/one/sched.conf
+    regexp: '^(?i)^\s*DEBUG_LEVEL\s*='
+    line: "  DEBUG_LEVEL = {{ one_debug_level }}"
+    state: present
+  notify: restart opennebula-scheduler
+
+- name: Configure opennebula-hem log level
+  ansible.builtin.lineinfile:
+    path: /etc/one/onehem-server.conf
+    regexp: '^:debug_level:'
+    line: ":debug_level: {{ one_debug_level }}"
+    state: present
+  notify: restart opennebula-hem
+
 - name: Start and enable OpenNebula services
   service:
     name: "{{ item }}"
