@@ -15,6 +15,7 @@
 - name: Install OpenNebula and Sunstone
   apt:
     name: "{{ item }}={{ one_install_version }}*"
+    dpkg_options: force-confnew
     state: present
   loop:
     - opennebula
