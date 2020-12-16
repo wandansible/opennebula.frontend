@@ -6,3 +6,11 @@ one_pyone_version: "{{ one_install_version }}"
 one_datastores: []
 one_ssh_key_type: ed25519
 one_debug_level: 1  # warning
+
+one_sunstone_config:
+  host: "127.0.0.1"
+  vnc_proxy_support_wss: "only"
+  vnc_proxy_cert: "/etc/one/ssl/fullchain.pem"
+  vnc_proxy_key: "/etc/one/ssl/privkey.pem"
+  vnc_request_password: "true"
+  debug_level: "{{ one_debug_level }}"

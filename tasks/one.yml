@@ -51,12 +51,14 @@
     mode: u=rwx,g=rx,o=
 
 - name: Configure /etc/one/sunstone-server.conf
-  template:
-    src: one/sunstone-server.conf
-    dest: /etc/one/sunstone-server.conf
-    owner: root
-    group: oneadmin
-    mode: '0640'
+  lineinfile:
+    path: /etc/one/sunstone-server.conf
+    regexp: '^:{{ item.key }}:'
+    line: ":{{ item.key }}: {{ item.value }}"
+    state: present
+  loop: "{{ one_sunstone_config | dict2items }}"
+  loop_control:
+    label: "{{ item.key }} = {{ item.value }}"
   notify:
     - restart opennebula-sunstone
     - restart opennebula-novnc
