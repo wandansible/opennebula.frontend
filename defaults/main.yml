@@ -1,7 +1,8 @@
 ---
 one_apt_key_fingerprint: "92B77188854CF23E1634DA89592F7F0585E16EBF"
-one_version: "5.12"
-one_pyone_version: ""
+one_install_version: "5.12.0.3"
+one_version: "{{ one_install_version | regex_replace('^(\\d+\\.\\d+).*', '\\1') }}"
+one_pyone_version: "{{ one_install_version }}"
 one_datastores: []
 one_ssh_key_type: ed25519
 one_debug_level: 1  # warning

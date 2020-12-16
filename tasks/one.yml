@@ -14,10 +14,11 @@
 
 - name: Install OpenNebula and Sunstone
   apt:
-    name:
-      - opennebula
-      - opennebula-sunstone
+    name: "{{ item }}={{ one_install_version }}*"
     state: present
+  loop:
+    - opennebula
+    - opennebula-sunstone
 
 - name: Set oneadmin password
   template:
@@ -93,8 +94,9 @@
   notify: restart opennebula-hem
 
 - name: Start and enable OpenNebula services
-  service:
+  ansible.builtin.systemd:
     name: "{{ item }}"
+    daemon_reload: yes
     state: started
     enabled: yes
   loop:
