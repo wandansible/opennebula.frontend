@@ -35,7 +35,7 @@
 
 - name: Configure /etc/one/oned.conf
   template:
-    src: one/oned.conf
+    src: one/{{ one_version }}/oned.conf
     dest: /etc/one/oned.conf
     owner: root
     group: oneadmin
