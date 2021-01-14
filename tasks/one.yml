@@ -14,10 +14,12 @@
 
 - name: Install OpenNebula and Sunstone
   apt:
-    name:
-      - opennebula
-      - opennebula-sunstone
+    name: "{{ item }}={{ one_install_version }}*"
+    dpkg_options: force-confnew
     state: present
+  loop:
+    - opennebula
+    - opennebula-sunstone
 
 - name: Set oneadmin password
   template:
@@ -33,7 +35,7 @@
 
 - name: Configure /etc/one/oned.conf
   template:
-    src: one/oned.conf
+    src: one/{{ one_version }}/oned.conf
     dest: /etc/one/oned.conf
     owner: root
     group: oneadmin
@@ -50,12 +52,14 @@
     mode: u=rwx,g=rx,o=
 
 - name: Configure /etc/one/sunstone-server.conf
-  template:
-    src: one/sunstone-server.conf
-    dest: /etc/one/sunstone-server.conf
-    owner: root
-    group: oneadmin
-    mode: '0640'
+  lineinfile:
+    path: /etc/one/sunstone-server.conf
+    regexp: '^:{{ item.key }}:'
+    line: ":{{ item.key }}: {{ item.value }}"
+    state: present
+  loop: "{{ one_sunstone_config | dict2items }}"
+  loop_control:
+    label: "{{ item.key }} = {{ item.value }}"
   notify:
     - restart opennebula-sunstone
     - restart opennebula-novnc
@@ -93,8 +97,9 @@
   notify: restart opennebula-hem
 
 - name: Start and enable OpenNebula services
-  service:
+  ansible.builtin.systemd:
     name: "{{ item }}"
+    daemon_reload: yes
     state: started
     enabled: yes
   loop:
