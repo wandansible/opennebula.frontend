@@ -26,13 +26,3 @@
   ansible.builtin.service:
     name: opennebula-hem
     state: restarted
-
-- name: restart apache
-  service:
-    name: apache2
-    state: restarted
-
-- name: reload apache
-  service:
-    name: apache2
-    state: reloaded
