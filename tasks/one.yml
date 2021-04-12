@@ -2,12 +2,12 @@
 - name: Add OpenNebula apt signing key
   apt_key:
     id: "{{ one_apt_key_fingerprint }}"
-    url: https://downloads.opennebula.org/repo/repo.key
+    url: https://downloads.opennebula.io/repo/repo.key
     state: present
 
 - name: Add OpenNebula {{ one_version }} apt repository
   apt_repository:
-    repo: deb https://downloads.opennebula.org/repo/{{ one_version }}/{{ ansible_distribution }}/{{ ansible_distribution_version }} stable opennebula
+    repo: deb https://downloads.opennebula.io/repo/{{ one_version }}/{{ ansible_distribution }}/{{ ansible_distribution_version }} stable opennebula
     filename: opennebula
     update_cache: yes
     state: present
@@ -95,6 +95,15 @@
     line: ":debug_level: {{ one_debug_level }}"
     state: present
   notify: restart opennebula-hem
+
+- name: Remove fireedge sunstone config
+  ansible.builtin.lineinfile:
+    path: /etc/one/sunstone-server.conf
+    regexp: '^:{{ item }}:'
+    state: absent
+  loop:
+    - private_fireedge_endpoint
+    - public_fireedge_endpoint
 
 - name: Start and enable OpenNebula services
   ansible.builtin.systemd:
