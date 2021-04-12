@@ -1,6 +1,6 @@
 ---
 one_apt_key_fingerprint: "92B77188854CF23E1634DA89592F7F0585E16EBF"
-one_install_version: "5.12.0.3"
+one_install_version: "6.0.0"
 one_version: "{{ one_install_version | regex_replace('^(\\d+\\.\\d+).*', '\\1') }}"
 one_pyone_version: "{{ one_install_version }}"
 one_datastores: []
@@ -14,3 +14,44 @@ one_sunstone_config:
   vnc_proxy_key: "/etc/one/ssl/privkey.pem"
   vnc_request_password: "true"
   debug_level: "{{ one_debug_level }}"
+
+one_config:
+  vars:
+    LISTEN_ADDRESS: "127.0.0.1"
+    HOSTNAME: "{{ one_frontend }}"
+    DEFAULT_AUTH: "ldap"
+  sections:
+    - name: LOG
+      value: |
+        SYSTEM      = "file",
+        DEBUG_LEVEL = {{ one_debug_level }}
+    - name: DB
+      value: |
+        BACKEND = "mysql",
+        SERVER = "localhost",
+        PORT = 0,
+        USER = "oneadmin",
+        PASSWD = "{{ one_db_password }}",
+        DB_NAME = "opennebula",
+        CONNECTIONS = 25,
+        COMPARE_BINARY = "no"
+    - name: VNC_PORTS
+      value: |
+        START    = 5900,
+        RESERVED = "9869, 29876, 32768:65536"
+    - name: TM_MAD_CONF
+      match: NAME = "dev"
+      value: |
+        NAME = "dev", LN_TARGET = "NONE", CLONE_TARGET = "NONE", SHARED = "YES",
+        TM_MAD_SYSTEM = "ssh,shared", LN_TARGET_SSH = "SYSTEM", CLONE_TARGET_SSH = "SYSTEM",
+        DISK_TYPE_SSH = "BLOCK", LN_TARGET_SHARED = "NONE",
+        CLONE_TARGET_SHARED = "SELF", DISK_TYPE_SHARED = "BLOCK",
+        DRIVER = "raw"
+    - name: AUTH_MAD_CONF
+      match: NAME = "ldap"
+      value: |
+        NAME = "ldap",
+        PASSWORD_CHANGE = "NO",
+        DRIVER_MANAGED_GROUPS = "NO",
+        DRIVER_MANAGED_GROUP_ADMIN = "NO",
+        MAX_TOKEN_TIME = "86400"
