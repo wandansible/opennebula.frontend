@@ -33,14 +33,29 @@
     - restart opennebula msg
     - restart opennebula-scheduler
 
-- name: Configure /etc/one/oned.conf
-  template:
-    src: one/{{ one_version }}/oned.conf
-    dest: /etc/one/oned.conf
-    owner: root
-    group: oneadmin
-    mode: '0640'
-  no_log: true
+- name: Configure /etc/one/oned.conf vars
+  ansible.builtin.lineinfile:
+    path: /etc/one/oned.conf
+    regexp: '^{{ item.key }}\s*='
+    line: '{{ item.key }} = "{{ item.value }}"'
+    state: present
+  loop: "{{ one_config.vars | dict2items }}"
+  loop_control:
+    label: "{{ item.key }} = {{ item.value }}"
+  notify: restart opennebula msg
+
+- name: Configure /etc/one/oned.conf sections
+  ansible.builtin.replace:
+    path: /etc/one/oned.conf
+    regexp: '(?i)^{{ item.name }}\s*=\s*\[[^\[\]]*{{ item.match | default("") }}[^\[\]]*\]$'
+    replace: |-
+      {{ item.name | upper }} = [
+        {{ item.value | trim | indent(2, false) }}
+      ]
+  loop: "{{ one_config.sections }}"
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: "{{ item.name | upper == 'DB' }}"
   notify: restart opennebula msg
 
 - name: Create OpenNebula ssl directory
