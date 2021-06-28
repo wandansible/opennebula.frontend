@@ -26,3 +26,11 @@
   ansible.builtin.service:
     name: opennebula-hem
     state: restarted
+
+- name: onehost sync
+  ansible.builtin.command:
+    cmd: onehost sync --force
+  become: yes
+  become_user: oneadmin
+  vars:
+    ansible_ssh_pipelining: true

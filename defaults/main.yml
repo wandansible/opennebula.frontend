@@ -55,3 +55,18 @@ one_config:
         DRIVER_MANAGED_GROUPS = "NO",
         DRIVER_MANAGED_GROUP_ADMIN = "NO",
         MAX_TOKEN_TIME = "86400"
+    - name: DS_MAD_CONF
+      match: NAME = "lvm"
+      value: |
+        NAME = "lvm", REQUIRED_ATTRS = "DISK_TYPE,BRIDGE_LIST",
+        PERSISTENT_ONLY = "YES"
+    - name: TM_MAD_CONF
+      match: NAME = "lvm"
+      value: |
+        NAME = "lvm", LN_TARGET = "NONE", CLONE_TARGET = "SELF", SHARED = "YES",
+        TM_MAD_SYSTEM = "ssh,shared", LN_TARGET_SSH = "NONE", CLONE_TARGET_SSH = "SELF",
+        DISK_TYPE_SSH = "BLOCK", LN_TARGET_SHARED = "NONE",
+        CLONE_TARGET_SHARED = "SELF", DISK_TYPE_SHARED = "BLOCK",
+        DRIVER = "raw"
+
+one_addon_lvm_version: 1.0.0
