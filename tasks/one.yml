@@ -144,6 +144,17 @@
     - tm
   notify: onehost sync
 
+- name: Update OpenNebula Sunstone views features
+  ansible.builtin.lineinfile:
+    path: /etc/one/sunstone-views/{{ item.type | default("mixed") }}/{{ item.view }}.yaml
+    regexp: '\s*{{ item.key }}:'
+    insertafter: 'features:'
+    line: "    {{ item.key }}: {{ item.value | bool | lower }}"
+  loop: "{{ one_sunstone_view_features }}"
+  loop_control:
+    label: "{{ item.view }}: {{ item.key }}"
+  notify: restart opennebula-sunstone
+
 - name: Start and enable OpenNebula services
   ansible.builtin.systemd:
     name: "{{ item }}"

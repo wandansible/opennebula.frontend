@@ -70,3 +70,8 @@ one_config:
         DRIVER = "raw"
 
 one_addon_lvm_version: 1.0.0
+
+one_sunstone_view_features:
+  - view: user
+    key: show_host_instantiate
+    value: true
