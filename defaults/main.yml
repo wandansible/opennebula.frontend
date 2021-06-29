@@ -75,3 +75,9 @@ one_sunstone_view_features:
   - view: user
     key: show_host_instantiate
     value: true
+  - view: user
+    key: instantiate_cpu_factor
+    value: true
+  - view: cloud
+    key: instantiate_cpu_factor
+    value: true
