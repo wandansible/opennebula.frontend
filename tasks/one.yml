@@ -121,6 +121,40 @@
     - private_fireedge_endpoint
     - public_fireedge_endpoint
 
+- name: Download OpenNebula LVM datastore drivers
+  ansible.builtin.unarchive:
+    src: https://github.com/wanduow/addon-lvm/archive/{{ one_addon_lvm_version }}.tar.gz
+    remote_src: true
+    dest: /usr/local/src/
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+    creates: /usr/local/src/addon-lvm-{{ one_addon_lvm_version }}
+
+- name: Install OpenNebula LVM datastore drivers
+  ansible.builtin.copy:
+    src: /usr/local/src/addon-lvm-{{ one_addon_lvm_version }}/{{ item }}/lvm
+    remote_src: true
+    dest: /var/lib/one/remotes/{{ item }}/
+    owner: oneadmin
+    group: oneadmin
+    mode: u=rwx,g=rx,o=
+  loop:
+    - datastore
+    - tm
+  notify: onehost sync
+
+- name: Update OpenNebula Sunstone views features
+  ansible.builtin.lineinfile:
+    path: /etc/one/sunstone-views/{{ item.type | default("mixed") }}/{{ item.view }}.yaml
+    regexp: '\s*{{ item.key }}:'
+    insertafter: 'features:'
+    line: "    {{ item.key }}: {{ item.value | bool | lower }}"
+  loop: "{{ one_sunstone_view_features }}"
+  loop_control:
+    label: "{{ item.view }}: {{ item.key }}"
+  notify: restart opennebula-sunstone
+
 - name: Start and enable OpenNebula services
   ansible.builtin.systemd:
     name: "{{ item }}"
