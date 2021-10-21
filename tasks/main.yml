@@ -5,6 +5,9 @@
 - name: Configure OpenNebula
   import_tasks: one.yml
 
+- name: Add api user
+  import_tasks: one-api-user.yml
+
 - name: Configure disks
   import_tasks: disk.yml
 

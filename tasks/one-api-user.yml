@@ -1,0 +1,36 @@
+---
+- name: Check if api user exists in OpenNebula
+  ansible.builtin.command:
+    cmd: >-
+      oneuser show
+      "{{ one_api_username }}"
+  become: true
+  become_user: oneadmin
+  vars:
+    ansible_ssh_pipelining: true
+  register: _one_user_check
+  changed_when: false
+  failed_when: _one_user_check.rc != 0 and 'not found' not in _one_user_check.stderr
+
+- name: Add api user to OpenNebula
+  ansible.builtin.command:
+    cmd: >-
+      oneuser create
+      "{{ one_api_username }}" "{{ one_api_password }}"
+  when: _one_user_check.rc != 0
+  become: true
+  become_user: oneadmin
+  vars:
+    ansible_ssh_pipelining: true
+  no_log: true
+
+- name: Add api user to oneadmin group in OpenNebula
+  ansible.builtin.command:
+    cmd: >-
+      oneuser chgrp
+      "{{ one_api_username }}" "oneadmin"
+  when: _one_user_check.rc != 0
+  become: true
+  become_user: oneadmin
+  vars:
+    ansible_ssh_pipelining: true
