@@ -1,0 +1,4 @@
+NAME = "{{ item.name }}"
+{% for key, value in item.config | dictsort %}
+{{ key | upper }} = "{{ value }}"
+{% endfor %}
