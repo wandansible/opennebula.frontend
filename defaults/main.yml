@@ -3,7 +3,7 @@ one_apt_key_fingerprint: "92B77188854CF23E1634DA89592F7F0585E16EBF"
 one_install_version: "6.0.0.2"
 one_version: "{{ one_install_version | regex_replace('^(\\d+\\.\\d+).*', '\\1') }}"
 one_pyone_version: "{{ one_install_version }}"
-one_datastores: []
+one_datastore_mounts: []
 one_ssh_key_type: ed25519
 one_debug_level: 1  # warning
 
@@ -68,6 +68,25 @@ one_config:
         DISK_TYPE_SSH = "BLOCK", LN_TARGET_SHARED = "NONE",
         CLONE_TARGET_SHARED = "SELF", DISK_TYPE_SHARED = "BLOCK",
         DRIVER = "raw"
+
+one_datastores:
+  - id: 0
+    name: Default
+    config:
+      tm_mad: ssh
+      type: SYSTEM_DS
+  - id: 1
+    name: Images
+    config:
+      ds_mad: fs
+      tm_mad: ssh
+      type: IMAGE_DS
+  - id: 2
+    name: Files
+    config:
+      ds_mad: fs
+      tm_mad: ssh
+      type: FILE_DS
 
 one_addon_lvm_version: 1.0.0
 
