@@ -10,7 +10,9 @@
     ansible_ssh_pipelining: true
   register: _one_user_check
   changed_when: false
-  failed_when: _one_user_check.rc != 0 and 'not found' not in _one_user_check.stderr
+  failed_when:
+    - _one_user_check.rc != 0
+    - "'not found' not in _one_user_check.stderr"
 
 - name: Add api user to OpenNebula
   ansible.builtin.command:
