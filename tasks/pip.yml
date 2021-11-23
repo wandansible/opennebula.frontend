@@ -7,13 +7,21 @@
       - python3-setuptools
     state: present
 
+- name: Create OpenNebula opt directory
+  ansible.builtin.file:
+    path: /opt/one
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+
 - name: Create OpenNebula python virtualenv directory
   file:
     path: /opt/one/venv
     state: directory
-    owner: root
-    group: root
-    mode: '0755'
+    owner: nobody
+    group: nogroup
+    mode: u=rwx,g=rx,o=rx
 
 - name: Install pyone in OpenNebula python virtualenv
   pip:
@@ -22,3 +30,7 @@
     virtualenv: /opt/one/venv
     virtualenv_command: "/usr/bin/python3 -m venv"
     state: present
+  become: true
+  become_user: nobody
+  vars:
+    ansible_ssh_pipelining: true
