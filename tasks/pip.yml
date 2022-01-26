@@ -32,5 +32,3 @@
     state: present
   become: true
   become_user: nobody
-  vars:
-    ansible_ssh_pipelining: true

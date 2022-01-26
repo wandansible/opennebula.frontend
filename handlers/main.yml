@@ -32,5 +32,3 @@
     cmd: onehost sync --force
   become: yes
   become_user: oneadmin
-  vars:
-    ansible_ssh_pipelining: true
