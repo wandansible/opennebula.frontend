@@ -6,8 +6,6 @@
       "{{ one_api_username }}"
   become: true
   become_user: oneadmin
-  vars:
-    ansible_ssh_pipelining: true
   register: _one_user_check
   changed_when: false
   failed_when:
@@ -22,8 +20,6 @@
   when: _one_user_check.rc != 0
   become: true
   become_user: oneadmin
-  vars:
-    ansible_ssh_pipelining: true
   no_log: true
 
 - name: Add api user to oneadmin group in OpenNebula
@@ -34,5 +30,3 @@
   when: _one_user_check.rc != 0
   become: true
   become_user: oneadmin
-  vars:
-    ansible_ssh_pipelining: true
