@@ -1,64 +1,64 @@
 ---
 - name: Install MariaDB
-  apt:
+  ansible.builtin.apt:
     name: mariadb-server
     state: present
 
 - name: Ensure MariaDB is started and enabled
-  service:
+  ansible.builtin.service:
     name: mariadb
     state: started
     enabled: yes
 
 - name: Install MySQL python library
-  apt:
+  ansible.builtin.apt:
     name: python3-mysqldb
     state: present
 
 - name: Ensure root@localhost exists
-  mysql_user:
+  community.mysql.mysql_user:
     name: root
     host: localhost
     priv: '*.*:ALL,GRANT'
     state: present
 
 - name: Get root plugin
-  command:
+  ansible.builtin.command:
     cmd: mysql -NBe "SELECT Plugin FROM mysql.user WHERE User='root' AND Host='localhost';"
   changed_when: false
   register: root_plugin
 
 - name: Set root plugin to unix_socket
-  command:
+  ansible.builtin.command:
     cmd: mysql -NBe "ALTER USER root@localhost IDENTIFIED VIA unix_socket;"
   when: root_plugin.stdout != "unix_socket"
 
 - name: Get root hosts that are not localhost
-  command:
+  ansible.builtin.command:
     cmd: mysql -NBe "SELECT Host FROM mysql.user WHERE User='root' AND Host <> 'localhost';"
   changed_when: false
   register: root_hosts
 
 - name: Disallow root login remotely
-  mysql_user:
+  community.mysql.mysql_user:
     name: root
     host: "{{ item }}"
     state: absent
   loop: "{{ root_hosts.stdout_lines }}"
 
 - name: Remove all anonymous user accounts
-  mysql_user:
+  community.mysql.mysql_user:
     name: ''
     host_all: yes
     state: absent
 
 - name: Remove test database
-  mysql_db:
+  community.mysql.mysql_db:
     name: test
     state: absent
 
 - name: Add oneadmin user
-  mysql_user:
+  community.mysql.mysql_user:
     name: oneadmin
     host: localhost
     password: "{{ one_db_password }}"
@@ -68,12 +68,12 @@
   no_log: true
 
 - name: Get global transaction isolation level
-  command:
+  ansible.builtin.command:
     cmd: mysql -NBe "SELECT @@global.tx_isolation;"
   changed_when: false
   register: tx_isolation
 
 - name: Set global transaction isolation level
-  command:
+  ansible.builtin.command:
     cmd: mysql -NBe "SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;"
   when: tx_isolation.stdout != "READ-COMMITTED"

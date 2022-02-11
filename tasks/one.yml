@@ -1,19 +1,36 @@
 ---
+- name: Remove old OpenNebula apt repository entry
+  ansible.builtin.apt_repository:
+    repo: deb https://downloads.opennebula.io/repo/{{ one_version }}/{{ ansible_distribution }}/{{ ansible_distribution_version }} stable opennebula
+    filename: opennebula
+    update_cache: no
+    state: absent
+
+- name: Remove OpenNebula apt signing key from default apt keyring
+  ansible.builtin.apt_key:
+    id: "{{ one_apt_key_fingerprint }}"
+    keyring: /etc/apt/trusted.gpg
+    state: absent
+
 - name: Add OpenNebula apt signing key
-  apt_key:
+  ansible.builtin.apt_key:
     id: "{{ one_apt_key_fingerprint }}"
     url: https://downloads.opennebula.io/repo/repo.key
+    keyring: /usr/share/keyrings/opennebula.gpg
     state: present
 
 - name: Add OpenNebula {{ one_version }} apt repository
-  apt_repository:
-    repo: deb https://downloads.opennebula.io/repo/{{ one_version }}/{{ ansible_distribution }}/{{ ansible_distribution_version }} stable opennebula
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/usr/share/keyrings/opennebula.gpg]
+      https://downloads.opennebula.io/repo/{{ one_version }}/{{ ansible_distribution }}/{{ ansible_distribution_version }}
+      stable opennebula
     filename: opennebula
     update_cache: yes
     state: present
 
 - name: Install OpenNebula and Sunstone
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}={{ one_install_version }}*"
     dpkg_options: force-confnew
     install_recommends: no
@@ -23,7 +40,7 @@
     - opennebula-sunstone
 
 - name: Set oneadmin password
-  template:
+  ansible.builtin.template:
     src: one/one_auth
     dest: /var/lib/one/.one/one_auth
     owner: oneadmin
@@ -60,7 +77,7 @@
   notify: restart opennebula msg
 
 - name: Create OpenNebula ssl directory
-  file:
+  ansible.builtin.file:
     path: /etc/one/ssl
     state: directory
     owner: root
@@ -68,7 +85,7 @@
     mode: u=rwx,g=rx,o=
 
 - name: Configure /etc/one/sunstone-server.conf
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/one/sunstone-server.conf
     regexp: '^:{{ item.key }}:'
     line: ":{{ item.key }}: {{ item.value }}"
@@ -81,7 +98,7 @@
     - restart opennebula-novnc
 
 - name: Configure /etc/one/auth/ldap_auth.conf
-  template:
+  ansible.builtin.template:
     src: one/ldap_auth.conf
     dest: /etc/one/auth/ldap_auth.conf
     owner: root
