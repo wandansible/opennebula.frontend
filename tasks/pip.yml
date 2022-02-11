@@ -1,6 +1,6 @@
 ---
 - name: Install pip dependencies
-  apt:
+  ansible.builtin.apt:
     name:
       - python3-pip
       - python3-venv
@@ -16,7 +16,7 @@
     mode: u=rwx,g=rx,o=rx
 
 - name: Create OpenNebula python virtualenv directory
-  file:
+  ansible.builtin.file:
     path: /opt/one/venv
     state: directory
     owner: nobody
@@ -24,7 +24,7 @@
     mode: u=rwx,g=rx,o=rx
 
 - name: Install pyone in OpenNebula python virtualenv
-  pip:
+  ansible.builtin.pip:
     name: pyone
     version: "{{ one_pyone_version }}"
     virtualenv: /opt/one/venv

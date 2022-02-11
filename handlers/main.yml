@@ -1,6 +1,6 @@
 ---
 - name: restart opennebula msg
-  debug:
+  ansible.builtin.debug:
     msg: >
       OpenNebula needs to be restarted for changes to take effect.
       Before restarting,
@@ -8,17 +8,17 @@
       Wait until these virtual machines are in a final state (runn, suspended, stopped, done).
 
 - name: restart opennebula-scheduler
-  service:
+  ansible.builtin.service:
     name: opennebula-scheduler
     state: restarted
 
 - name: restart opennebula-sunstone
-  service:
+  ansible.builtin.service:
     name: opennebula-sunstone
     state: restarted
 
 - name: restart opennebula-novnc
-  service:
+  ansible.builtin.service:
     name: opennebula-novnc
     state: restarted
 

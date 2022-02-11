@@ -1,21 +1,21 @@
 ---
 - name: Configure MariaDB
-  import_tasks: mariadb.yml
+  ansible.builtin.import_tasks: mariadb.yml
 
 - name: Configure OpenNebula
-  import_tasks: one.yml
+  ansible.builtin.import_tasks: one.yml
 
 - name: Add api user
-  import_tasks: one-api-user.yml
+  ansible.builtin.import_tasks: one-api-user.yml
 
 - name: Configure OpenNebula datastores
-  import_tasks: one-datastores.yml
+  ansible.builtin.import_tasks: one-datastores.yml
 
 - name: Configure disks
-  import_tasks: disk.yml
+  ansible.builtin.import_tasks: disk.yml
 
 - name: Configure passwordless ssh
-  import_tasks: ssh.yml
+  ansible.builtin.import_tasks: ssh.yml
 
 - name: Configure python packages
-  import_tasks: pip.yml
+  ansible.builtin.import_tasks: pip.yml
