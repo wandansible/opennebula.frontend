@@ -1,0 +1,195 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure OpenNebula
+    description: |
+      Deploy an OpenNebula frontend server that functions as a controller
+      for an OpenNebula cluster and serves the sunstone web GUI.
+    options:
+      one_apt_key_fingerprint:
+        description: Fingerprint for the OpenNebula apt key
+        type: str
+
+      one_install_version:
+        description: Version of OpenNebula to install
+        type: str
+        default: 6.4.0
+
+      one_version:
+        description: Version of the OpenNebula repository to track
+        type: str
+        default: 6.4
+
+      one_pyone_version:
+        description: Version of pyone to install
+        type: str
+        default: 6.4.0
+
+      one_datastores:
+        description: Configuration for datastores
+        type: list
+        elements: dict
+        options:
+          id:
+            description: ID of the datastore (required for renaming)
+            type: int
+          name:
+            description: Name for the datastore
+            type: str
+            required: true
+          config:
+            description: Configuration for the datastore
+            type: dict
+            required: true
+
+      one_datastores_disk_uuid:
+        description: UUID of the disk to mount to the datastores root directory
+        type: str
+
+      one_datastore_mounts:
+        description: Disk mounts for individual datastores
+        type: list
+        elements: dict
+        options:
+          id:
+            description: ID of the datastore to mount to
+            type: int
+            required: true
+          disk_uuid:
+            description: UUID of the disk being mounted
+            type: str
+            required: true
+
+      one_ssh_privkey:
+        description: Contents of the oneadmin ssh private key
+        type: str
+        required: true
+
+      one_ssh_key_type:
+        description: The oneadmin ssh key type
+        type: str
+        default: ed25519
+
+      one_ssh_pubkey:
+        description: Contents of the oneadmin ssh public key
+        type: str
+        required: true
+
+      one_admin_password:
+        description: Password for the oneadmin user for authentication with OpenNebula
+        type: str
+        required: true
+
+      one_db_password:
+        description: Password for connecting to the OpenNebula database
+        type: str
+        required: true
+
+      one_frontend:
+        description: Hostname of the frontend server
+        type: str
+        required: true
+
+      one_frontend_key:
+        description: Contents of the frontend SSH host key
+        type: str
+        required: true
+
+      one_debug_level:
+        description:
+          - Log level
+          - 0 = ERROR
+          - 1 = WARNING
+          - 2 = INFO
+          - 3 = DEBUG
+        type: int
+        default: 1
+        choices:
+          - 0
+          - 1
+          - 2
+          - 3
+
+      one_sunstone_config:
+        description: Configuration for sunstone
+        type: dict
+
+      one_config:
+        description: Configuration for oned
+        type: dict
+        options:
+          vars:
+            description: Configuration for individual variables that aren't in a section
+            type: dict
+            required: true
+          sections:
+            description: Configuration for whole sections
+            type: list
+            elements: dict
+            required: true
+            options:
+              name:
+                description: Name of the section
+                type: str
+                required: true
+              match:
+                description: |
+                  Search regex for matching a specific section
+                  when there a multiple sections with the same name
+                type: str
+              value:
+                description: Contents for the whole section
+                type: str
+                required: true
+
+      one_addon_lvm_version:
+        description: |
+          Version of the LVM driver addon to install,
+          for available versions see: https://github.com/wanduow/addon-lvm/releases
+        type: str
+        default: 1.0.0
+
+      one_sunstone_view_features:
+        description: Configuration for sunstone view features
+        type: list
+        elements: dict
+        options:
+          type:
+            description: The environment type
+            type: str
+            default: mixed
+            choices:
+              - mixed
+              - kvm
+              - vcenter
+          view:
+            description: The view to configure
+            type: str
+            required: true
+          key:
+            description: Name of the feature
+            type: str
+            required: true
+          value:
+            description: If true, enable the feature
+            type: bool
+            required: true
+
+      ldap_auth_host:
+        description: Hostname of LDAP server for OpenNebula LDAP authentication
+        type: str
+        required: true
+
+      ldap_auth_port:
+        description: Port for LDAP server
+        type: int
+        required: true
+
+      ldap_auth_base:
+        description: Base DN for LDAP search
+        type: str
+        required: true
+
+      one_ldap_tls_options:
+        description: TLS options for LDAP connections
+        type: dict
