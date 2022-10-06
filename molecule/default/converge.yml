@@ -1,0 +1,32 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include wandansible.opennebula.frontend"
+      ansible.builtin.include_role:
+        name: "wandansible.opennebula.frontend"
+      vars:
+        ldap_auth_host: "ldap.example.org"
+        ldap_auth_port: "636"
+        ldap_auth_base: "dc=example,dc=org"
+
+        one_frontend: "cloud.example.org"
+        one_api_username: "ansible"
+        one_api_password: "secret"
+        one_db_password: "password"
+        one_admin_password: "password"
+        one_frontend_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGAWLNxX7Iy87EWB193BBrW27AxvLM3Bfef7kYQhSgn1"
+        one_ssh_pubkey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGAWLNxX7Iy87EWB193BBrW27AxvLM3Bfef7kYQhSgn1"
+        one_ssh_privkey: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+          QyNTUxOQAAACBgFizcV+yMvOxFgdfdwQa1tuwMbyzNwX3n+5GEIUoJ9QAAAJjwLris8C64
+          rAAAAAtzc2gtZWQyNTUxOQAAACBgFizcV+yMvOxFgdfdwQa1tuwMbyzNwX3n+5GEIUoJ9Q
+          AAAEAYDUpIWo9oznrWNtyCA1CijeJo8MqiDRnQppGg0yiIIGAWLNxX7Iy87EWB193BBrW2
+          7AxvLM3Bfef7kYQhSgn1AAAAEXJvb3RANmU4YjJmMmJjODE5AQIDBA==
+          -----END OPENSSH PRIVATE KEY-----
+
+        one_sunstone_config:
+          host: "127.0.0.1"
+          vnc_request_password: "true"
+          debug_level: "{{ one_debug_level }}"
