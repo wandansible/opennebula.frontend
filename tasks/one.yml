@@ -156,7 +156,7 @@
 
 - name: Download OpenNebula LVM datastore drivers
   ansible.builtin.unarchive:
-    src: https://github.com/wanduow/addon-lvm/archive/{{ one_addon_lvm_version }}.tar.gz
+    src: https://github.com/wandnz/addon-lvm/archive/{{ one_addon_lvm_version }}.tar.gz
     remote_src: true
     dest: /usr/local/src/
     owner: root

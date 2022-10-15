@@ -35,7 +35,7 @@ OPTIONS (= is mandatory):
 
 - one_addon_lvm_version
         Version of the LVM driver addon to install, for available
-        versions see: https://github.com/wanduow/addon-lvm/releases
+        versions see: https://github.com/wandnz/addon-lvm/releases
         [Default: 1.0.0]
         type: str
 
