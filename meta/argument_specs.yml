@@ -145,7 +145,7 @@ argument_specs:
       one_addon_lvm_version:
         description: |
           Version of the LVM driver addon to install,
-          for available versions see: https://github.com/wanduow/addon-lvm/releases
+          for available versions see: https://github.com/wandnz/addon-lvm/releases
         type: str
         default: 1.0.0
 
